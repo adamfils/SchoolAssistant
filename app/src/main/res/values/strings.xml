@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Course Alert</string>
+    <string name="profile">Profile</string>
+    <string name="following">Following</string>
+    <string name="followers">Followers</string>
+    <string name="posts">Posts</string>
+    <string name="post_image">Post Image</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+</resources>
