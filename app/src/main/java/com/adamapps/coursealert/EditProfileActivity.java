@@ -27,7 +27,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.ldoublem.loadingviewlib.view.LVPlayBall;
@@ -35,14 +34,15 @@ import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
+import com.yalantis.ucrop.UCrop;
 
 public class EditProfileActivity extends AppCompatActivity {
     private static final int PIC_CODE = 100;
-    private EditText userName,userDescription,userGender,userLevel;
+    private EditText userName, userDescription, userGender, userLevel;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
     StorageReference photoRef;
-    String imageLink="";
+    String imageLink = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,35 +68,36 @@ public class EditProfileActivity extends AppCompatActivity {
         check();
 
     }
-    public void check(){
+
+    public void check() {
         final CircularImageView imageView = (CircularImageView) findViewById(R.id.userImage);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         DatabaseReference photoRef = databaseReference.child("UserInfo")
                 .child(user.getUid());
         photoRef.child("userImage").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                final String pic = dataSnapshot.getValue(String.class);
+                Picasso.with(EditProfileActivity.this).load(pic)
+                        .networkPolicy(NetworkPolicy.OFFLINE).into(imageView, new Callback() {
                     @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        final String pic = dataSnapshot.getValue(String.class);
-                        Picasso.with(EditProfileActivity.this).load(pic)
-                                .networkPolicy(NetworkPolicy.OFFLINE).into(imageView, new Callback() {
-                            @Override
-                            public void onSuccess() {
+                    public void onSuccess() {
 
-                            }
-
-                            @Override
-                            public void onError() {
-                                Picasso.with(EditProfileActivity.this).load(pic).into(imageView);
-                            }
-                        });
                     }
 
                     @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
+                    public void onError() {
+                        Picasso.with(EditProfileActivity.this).load(pic).into(imageView);
                     }
                 });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         userName = (EditText) findViewById(R.id.userDisplayName);
         userDescription = (EditText) findViewById(R.id.userDescription);
@@ -109,7 +110,7 @@ public class EditProfileActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String name = dataSnapshot.getValue(String.class);
-                if(name!=null)
+                if (name != null)
                     userName.setText(name);
             }
 
@@ -123,7 +124,7 @@ public class EditProfileActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String desc = dataSnapshot.getValue(String.class);
-                if(desc!=null)
+                if (desc != null)
                     userDescription.setText(desc);
             }
 
@@ -137,7 +138,7 @@ public class EditProfileActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String gender = dataSnapshot.getValue(String.class);
-                if(gender!=null)
+                if (gender != null)
                     userGender.setText(gender);
             }
 
@@ -151,7 +152,7 @@ public class EditProfileActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String level = dataSnapshot.getValue(String.class);
-                if(level!=null)
+                if (level != null)
                     userLevel.setText(String.valueOf(level));
             }
 
@@ -161,29 +162,33 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
     }
-    public void pickPic(View view){
+
+    public void pickPic(View view) {
         Intent pic = new Intent();
         pic.setAction(Intent.ACTION_GET_CONTENT);
         pic.setType("image/*");
-        startActivityForResult(pic,PIC_CODE);
+        startActivityForResult(pic, UCrop.REQUEST_CROP);
+
+
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==PIC_CODE&&resultCode==RESULT_OK){
+        if (requestCode == PIC_CODE && resultCode == RESULT_OK) {
             final Uri picUri = data.getData();
+
             final CircularImageView imageView = (CircularImageView) findViewById(R.id.userImage);
             final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-            StorageReference newPic  = photoRef.child("profile_pics").child(user.getUid()).child(picUri.getLastPathSegment());
+            StorageReference newPic = photoRef.child("profile_pics").child(user.getUid()).child(picUri.getLastPathSegment());
             UploadTask uploadTask = newPic.putFile(picUri);
             final ProgressDialog progressDialog = new ProgressDialog(EditProfileActivity.this);
             progressDialog.setCanceledOnTouchOutside(false);
-                    uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                    double progress = (100* taskSnapshot.getBytesTransferred())/taskSnapshot.getTotalByteCount();
-                    progressDialog.setTitle(progress+""+"% Uploaded");
+                    double progress = (100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                    progressDialog.setTitle(progress + "" + "% Uploaded");
                     progressDialog.show();
                     progressDialog.dismiss();
                 }
@@ -217,22 +222,23 @@ public class EditProfileActivity extends AppCompatActivity {
             });
 
         }
+        }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_tick, menu);
+        return true;
     }
 
     @Override
-        public boolean onCreateOptionsMenu(Menu menu) {
-            // Inflate the menu; this adds items to the action bar if it is present.
-            getMenuInflater().inflate(R.menu.menu_tick, menu);
-            return true;
-        }
-
-    @Override
-        public boolean onOptionsItemSelected(MenuItem item) {
-            // Handle action bar item clicks here. The action bar will
-            // automatically handle clicks on the Home/Up button, so long
-            // as you specify a parent activity in AndroidManifest.xml.
-            int id = item.getItemId();
-        if(id==R.id.saveInfo) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.saveInfo) {
             userName = (EditText) findViewById(R.id.userDisplayName);
             userDescription = (EditText) findViewById(R.id.userDescription);
             userGender = (EditText) findViewById(R.id.userGender);
@@ -261,56 +267,32 @@ public class EditProfileActivity extends AppCompatActivity {
                 progressDialog.show();
             }
 
+            UserInfoModel userInfoModel = new UserInfoModel(name, desc, gender, level);
+            assert user != null;
+            databaseReference.child("UserInfo")
+                    .child(user.getUid()).setValue(userInfoModel)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            playball.stopAnim();
+                            playball.setVisibility(View.INVISIBLE);
+                            progressDialog.dismiss();
+                            startActivity(new Intent(EditProfileActivity.this, HomeActivity.class));
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    playball.stopAnim();
+                    playball.setVisibility(View.INVISIBLE);
+                    progressDialog.dismiss();
+                }
+            });
 
-            /*if (TextUtils.isEmpty(imageLink)) {*/
-
-                UserInfoModel userInfoModel = new UserInfoModel(name, desc, gender, level);
-                assert user != null;
-                databaseReference.child("UserInfo")
-                        .child(user.getUid()).setValue(userInfoModel)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                playball.stopAnim();
-                                playball.setVisibility(View.INVISIBLE);
-                                progressDialog.dismiss();
-                                startActivity(new Intent(EditProfileActivity.this, HomeActivity.class));
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        playball.stopAnim();
-                        playball.setVisibility(View.INVISIBLE);
-                        progressDialog.dismiss();
-                    }
-                });
-
-            /*} else {
-                UserInfoModel userInfoModel = new UserInfoModel(name, imageLink, desc, gender, level);
-                databaseReference.child("UserInfo")
-                        .child(user.getUid()).setValue(userInfoModel)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                playball.stopAnim();
-                                playball.setVisibility(View.INVISIBLE);
-                                progressDialog.dismiss();
-                                startActivity(new Intent(EditProfileActivity.this, HomeActivity.class));
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        playball.stopAnim();
-                        playball.setVisibility(View.INVISIBLE);
-                        progressDialog.dismiss();
-                    }
-                });
-            }*/
         }
 
 
-            return super.onOptionsItemSelected(item);
-        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onStart() {
