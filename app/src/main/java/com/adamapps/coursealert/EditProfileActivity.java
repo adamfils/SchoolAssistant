@@ -195,7 +195,6 @@ public class EditProfileActivity extends AppCompatActivity {
                     imageView.setImageURI(picUri);
                     assert downloadUrl != null;
                     imageLink = downloadUrl.toString();
-                    if(downloadUrl!=null)
                     databaseReference.child("UserInfo").child(user.getUid()).child("userImage")
                             .setValue(downloadUrl.toString()).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
