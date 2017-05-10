@@ -88,7 +88,7 @@ public class SignUpActivity extends AppCompatActivity {
                 }
 
                 finish();
-                startActivity(new Intent(SignUpActivity.this,HomeActivity.class));
+                startActivity(new Intent(SignUpActivity.this, EditProfileActivity.class));
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

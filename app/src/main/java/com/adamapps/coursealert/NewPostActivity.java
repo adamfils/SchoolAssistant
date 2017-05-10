@@ -37,7 +37,7 @@ public class NewPostActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private DatabaseReference post_ref;
     private StorageReference pic_ref;
-    String imageLinked = "";
+    String imageLinked = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +85,7 @@ public class NewPostActivity extends AppCompatActivity {
             return ;
         }
 
-        if(imageLinked.equals("")) {
+        if (imageLinked != null) {
             Toast.makeText(this, "Publishing....", Toast.LENGTH_SHORT).show();
             SendPost sendPost = new SendPost(imageLinked, title, desc, uid);
             post_ref.child("post").push().setValue(sendPost).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -103,7 +103,7 @@ public class NewPostActivity extends AppCompatActivity {
             });
         }else{
             Toast.makeText(this, "Publishing....", Toast.LENGTH_SHORT).show();
-            SendPost sendPost = new SendPost("dumyText", title, desc, uid);
+            SendPost sendPost = new SendPost("NoImageHere", title, desc, uid);
             post_ref.child("post").push().setValue(sendPost).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {

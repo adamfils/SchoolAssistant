@@ -92,9 +92,9 @@ public class HomeActivity extends AppCompatActivity {
         public void setUid(String uid) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             assert user != null;
-            String UID = user.getUid();
+            String EMAIL = user.getEmail();
             TextView userId = (TextView) mView.findViewById(R.id.singleUserId);
-            userId.setText(UID);
+            userId.setText(EMAIL);
         }
     }
 
