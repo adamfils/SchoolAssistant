@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +15,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.adamapps.coursealert.model.UserInfoModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.ldoublem.loadingviewlib.view.LVPlayBall;
@@ -73,6 +72,7 @@ public class EditProfileActivity extends AppCompatActivity {
         final CircularImageView imageView = (CircularImageView) findViewById(R.id.userImage);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
+        assert user != null;
         DatabaseReference photoRef = databaseReference.child("UserInfo")
                 .child(user.getUid());
         photoRef.child("userImage").addValueEventListener(new ValueEventListener() {
@@ -80,7 +80,8 @@ public class EditProfileActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 final String pic = dataSnapshot.getValue(String.class);
                 Picasso.with(EditProfileActivity.this).load(pic)
-                        .networkPolicy(NetworkPolicy.OFFLINE).into(imageView, new Callback() {
+                        .networkPolicy(NetworkPolicy.OFFLINE).placeholder(R.drawable.ic_image)
+                        .into(imageView, new Callback() {
                     @Override
                     public void onSuccess() {
 
@@ -167,7 +168,7 @@ public class EditProfileActivity extends AppCompatActivity {
         Intent pic = new Intent();
         pic.setAction(Intent.ACTION_GET_CONTENT);
         pic.setType("image/*");
-        startActivityForResult(pic, UCrop.REQUEST_CROP);
+        startActivityForResult(pic, PIC_CODE);
 
 
     }
@@ -180,10 +181,12 @@ public class EditProfileActivity extends AppCompatActivity {
 
             final CircularImageView imageView = (CircularImageView) findViewById(R.id.userImage);
             final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            assert user != null;
             StorageReference newPic = photoRef.child("profile_pics").child(user.getUid()).child(picUri.getLastPathSegment());
             UploadTask uploadTask = newPic.putFile(picUri);
             final ProgressDialog progressDialog = new ProgressDialog(EditProfileActivity.this);
             progressDialog.setCanceledOnTouchOutside(false);
+            progressDialog.show();
             uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
@@ -239,6 +242,7 @@ public class EditProfileActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.saveInfo) {
+
             userName = (EditText) findViewById(R.id.userDisplayName);
             userDescription = (EditText) findViewById(R.id.userDescription);
             userGender = (EditText) findViewById(R.id.userGender);
@@ -246,7 +250,6 @@ public class EditProfileActivity extends AppCompatActivity {
             String name, desc, gender, level;
             final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             final LVPlayBall playball = (LVPlayBall) findViewById(R.id.loadingBall);
-            final ProgressDialog progressDialog = new ProgressDialog(this);
 
 
             name = userName.getText().toString().trim();
@@ -257,34 +260,29 @@ public class EditProfileActivity extends AppCompatActivity {
                 Toast.makeText(this, "Fill In All Blanks Before Proceeding", Toast.LENGTH_SHORT).show();
                 return false;
             }
-            if (Build.VERSION.SDK_INT >= 16) {
+
                 playball.setVisibility(View.VISIBLE);
                 playball.setViewColor(R.color.colorPrimary);
                 playball.startAnim(1000);
-            } else {
-                progressDialog.setTitle("Saving Info.....");
-                progressDialog.setCanceledOnTouchOutside(false);
-                progressDialog.show();
-            }
 
-            UserInfoModel userInfoModel = new UserInfoModel(name, desc, gender, level);
+            //UserInfoModel userInfoModel = new UserInfoModel(name, desc, gender, level);
             assert user != null;
-            databaseReference.child("UserInfo")
-                    .child(user.getUid()).setValue(userInfoModel)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            playball.stopAnim();
-                            playball.setVisibility(View.INVISIBLE);
-                            progressDialog.dismiss();
-                            startActivity(new Intent(EditProfileActivity.this, HomeActivity.class));
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
+            DatabaseReference infoRef = databaseReference.child("UserInfo").child(user.getUid());
+            infoRef.child("userName").setValue(name);
+            infoRef.child("userDescription").setValue(desc);
+            infoRef.child("userGender");
+            infoRef.child("userLevel").setValue(level).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    playball.stopAnim();
+                    playball.setVisibility(View.INVISIBLE);
+                    startActivity(new Intent(EditProfileActivity.this, HomeActivity.class));
+                }
+            }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     playball.stopAnim();
                     playball.setVisibility(View.INVISIBLE);
-                    progressDialog.dismiss();
                 }
             });
 

@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.adamapps.coursealert.model.SinglePostModel;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -53,10 +54,19 @@ public class HomeActivity extends AppCompatActivity {
                         (SinglePostModel.class, R.layout.single_post_layout, PostViewHolder.class, postRef) {
                     @Override
                     protected void populateViewHolder(PostViewHolder viewHolder, SinglePostModel model, int position) {
+
+                        final String post_key = getRef(position).getKey();
+
                         viewHolder.setImage(HomeActivity.this, model.getImage());
                         viewHolder.setTitle(model.getTitle());
                         viewHolder.setDesc(model.getDesc());
                         viewHolder.setUid(model.getUid());
+                        viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Toast.makeText(HomeActivity.this, "My Key Is " + post_key, Toast.LENGTH_SHORT).show();
+                            }
+                        });
 
                     }
                 };
@@ -73,7 +83,7 @@ public class HomeActivity extends AppCompatActivity {
 
         }
 
-        public void setImage(Context context, String image) {
+        void setImage(Context context, String image) {
             ImageView postImage = (ImageView) mView.findViewById(R.id.singlePostImage);
             Picasso.with(context).load(image).
                     placeholder(R.drawable.ic_image).error(R.drawable.ic_image_coloured).into(postImage);
@@ -84,7 +94,7 @@ public class HomeActivity extends AppCompatActivity {
             titleNew.setText(title);
         }
 
-        public void setDesc(String desc) {
+        void setDesc(String desc) {
             TextView description = (TextView) mView.findViewById(R.id.singlePostDescription);
             description.setText(desc);
         }

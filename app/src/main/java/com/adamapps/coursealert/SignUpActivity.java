@@ -1,9 +1,7 @@
 package com.adamapps.coursealert;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
@@ -66,26 +64,18 @@ public class SignUpActivity extends AppCompatActivity {
         passEdit.setEnabled(false);
 
         final LVEatBeans load = (LVEatBeans) findViewById(R.id.loading);
-        final ProgressDialog progressDialog = new ProgressDialog(this);
-        if(Build.VERSION.SDK_INT>=15) {
-            load.setVisibility(View.VISIBLE);
+
+        load.setVisibility(View.VISIBLE);
             load.setViewColor(Color.WHITE);
             load.setEyeColor(Color.parseColor("#006400"));
             load.startAnim(5000);
-        }else{
-            progressDialog.setTitle("Signing In");
-            progressDialog.show();
-            progressDialog.setCanceledOnTouchOutside(false);
-        }
+
         auth.createUserWithEmailAndPassword(email,pass).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {
                 Toast.makeText(SignUpActivity.this, "Welcome", Toast.LENGTH_SHORT).show();
-                if(Build.VERSION.SDK_INT>=15) {
                     load.stopAnim();
-                }else{
-                    progressDialog.dismiss();
-                }
+
 
                 finish();
                 startActivity(new Intent(SignUpActivity.this, EditProfileActivity.class));
@@ -97,12 +87,9 @@ public class SignUpActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(ProviderQueryResult providerQueryResult) {
                         Toast.makeText(SignUpActivity.this, "Email Already Exist", Toast.LENGTH_SHORT).show();
-                        if(Build.VERSION.SDK_INT>=15) {
-                            load.setVisibility(View.GONE);
-                        }
-                        else{
-                            progressDialog.dismiss();
-                        }
+
+                        load.setVisibility(View.GONE);
+
                         emailEdit.setEnabled(true);
                         passEdit.setEnabled(true);
                     }
