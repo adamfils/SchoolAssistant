@@ -40,38 +40,14 @@
                 android:inputType="textPassword"/>
         </android.support.design.widget.TextInputLayout>
 
-        <Spinner
-            android:id="@+id/spinnerCourses"
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/googleUp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="40dp"
+            android:onClick="googleSignUp"
+            android:foreground="?android:attr/selectableItemBackground"
             android:clickable="true" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Gender" />
-
-        <Spinner
-            android:id="@+id/spinnerLevel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true" />
-
-        <RadioGroup
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <RadioButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Male" />
-
-            <RadioButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Female" />
-        </RadioGroup>
-
 
     </LinearLayout>
     <com.ldoublem.loadingviewlib.view.LVEatBeans

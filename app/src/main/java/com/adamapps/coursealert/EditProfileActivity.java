@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -106,6 +107,7 @@ public class EditProfileActivity extends AppCompatActivity {
         userLevel = (EditText) findViewById(R.id.userLevel);
 
 
+
         databaseReference.child("UserInfo").child(user.getUid())
                 .child("userName").addValueEventListener(new ValueEventListener() {
             @Override
@@ -187,6 +189,14 @@ public class EditProfileActivity extends AppCompatActivity {
             final ProgressDialog progressDialog = new ProgressDialog(EditProfileActivity.this);
             progressDialog.setCanceledOnTouchOutside(false);
             progressDialog.show();
+            UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
+                    .setPhotoUri(picUri).build();
+            user.updateProfile(request).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Toast.makeText(EditProfileActivity.this, "Updated", Toast.LENGTH_SHORT).show();
+                }
+            });
             uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
@@ -268,9 +278,23 @@ public class EditProfileActivity extends AppCompatActivity {
             //UserInfoModel userInfoModel = new UserInfoModel(name, desc, gender, level);
             assert user != null;
             DatabaseReference infoRef = databaseReference.child("UserInfo").child(user.getUid());
+            UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
+                    .setDisplayName(name).build();
+            user.updateProfile(request).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Toast.makeText(EditProfileActivity.this, "Updated", Toast.LENGTH_SHORT).show();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(EditProfileActivity.this, "Could Not Update", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            });
             infoRef.child("userName").setValue(name);
             infoRef.child("userDescription").setValue(desc);
-            infoRef.child("userGender");
+            infoRef.child("userGender").setValue(gender);
             infoRef.child("userLevel").setValue(level).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {

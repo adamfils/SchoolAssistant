@@ -13,17 +13,29 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.ldoublem.loadingviewlib.view.LVEatBeans;
 
-public class SignInActivity extends AppCompatActivity {
+public class SignInActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+    private static final int RC_SIGN_INN = 901;
     TextInputEditText emailEdit, passEdit;
     FirebaseAuth auth;
     FirebaseAuth.AuthStateListener listener;
+    GoogleApiClient mGoogleApiClient;
+    SignInButton msignIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +50,16 @@ public class SignInActivity extends AppCompatActivity {
 
         LVEatBeans load = (LVEatBeans) findViewById(R.id.loading);
         load.setVisibility(View.GONE);
+
+        msignIn = (SignInButton) findViewById(R.id.google);
+        msignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(SignInActivity.this, "Sign In", Toast.LENGTH_SHORT).show();
+                Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+                startActivityForResult(signInIntent, RC_SIGN_INN);
+            }
+        });
 
         auth = FirebaseAuth.getInstance();
 
@@ -54,6 +76,52 @@ public class SignInActivity extends AppCompatActivity {
                 }
             }
         };
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RC_SIGN_INN) {
+            ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog.setCanceledOnTouchOutside(false);
+            progressDialog.show();
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            if (result.isSuccess()) {
+                GoogleSignInAccount account = result.getSignInAccount();
+                firebaseAuthWithGoogle(account);
+                progressDialog.dismiss();
+
+            }
+        }
+    }
+
+    public void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        auth.signInWithCredential(credential)
+                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(AuthResult authResult) {
+                        Toast.makeText(SignInActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(SignInActivity.this, EditProfileActivity.class));
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(SignInActivity.this, "Failed " + e, Toast.LENGTH_SHORT).show();
+
+            }
+        });
     }
 
     @Override
@@ -87,7 +155,7 @@ public class SignInActivity extends AppCompatActivity {
         final LVEatBeans load = (LVEatBeans) findViewById(R.id.loading);
         final ProgressDialog progressDialog = new ProgressDialog(this);
 
-        if (Build.VERSION.SDK_INT >= 15) {
+        if (Build.VERSION.SDK_INT >= 16) {
             load.setVisibility(View.VISIBLE);
             load.setViewColor(Color.WHITE);
             load.setEyeColor(Color.parseColor("#006400"));
@@ -116,5 +184,10 @@ public class SignInActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }
