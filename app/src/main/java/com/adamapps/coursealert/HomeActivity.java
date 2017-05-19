@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,10 +25,17 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.like.LikeButton;
+import com.like.OnLikeListener;
 import com.squareup.picasso.Picasso;
 
 public class HomeActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
@@ -36,6 +44,9 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
     RecyclerView recyclerView;
     FirebaseAuth auth;
     GoogleApiClient mGoogleApiClient;
+    private boolean mProcessLike = false;
+    DatabaseReference like_ref;
+    DatabaseReference comment_ref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +74,9 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
                 .enableAutoManage(this, this)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+        like_ref = reference.child("Likes");
+        comment_ref = reference.child("Comments");
+        like_ref.keepSynced(true);
     }
 
     @Override
@@ -80,14 +94,68 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
                         viewHolder.setTitle(model.getTitle());
                         viewHolder.setDesc(model.getDesc());
                         viewHolder.setUid(model.getUid());
-                        viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                        viewHolder.setLikeBtn(post_key);
+                        viewHolder.setUsersLike(post_key);
+                        viewHolder.like_btn.setOnLikeListener(new OnLikeListener() {
                             @Override
-                            public void onClick(View view) {
-                                Toast.makeText(HomeActivity.this, "My Key Is " + post_key, Toast.LENGTH_SHORT).show();
+                            public void liked(final LikeButton likeButton) {
+                                mProcessLike = true;
+
+                                like_ref = reference.child("Likes");
+                                like_ref.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        if (mProcessLike) {
+
+                                            like_ref.child(post_key).child(auth.getCurrentUser().getUid())
+                                                    .setValue(auth.getCurrentUser().getDisplayName())
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            Toast.makeText(HomeActivity.this, "Liked", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    })
+                                                    .addOnFailureListener(new OnFailureListener() {
+                                                        @Override
+                                                        public void onFailure(@NonNull Exception e) {
+                                                            Toast.makeText(HomeActivity.this, "Could Not Like", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
+                                            likeButton.setAnimationScaleFactor(3);
+                                            mProcessLike = false;
+
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void unLiked(LikeButton likeButton) {
+                                like_ref = reference.child("Likes");
+                                like_ref.child(post_key).child(auth.getCurrentUser().getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Toast.makeText(HomeActivity.this, "DisLiked", Toast.LENGTH_SHORT).show();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(HomeActivity.this, "Could Not Dislike \n" + e, Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                likeButton.setAnimationScaleFactor(3);
+                                mProcessLike = false;
+
                             }
                         });
 
                     }
+
                 };
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
@@ -100,11 +168,78 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
 
     public static class PostViewHolder extends RecyclerView.ViewHolder {
         View mView;
+        LikeButton like_btn;
+        ImageButton comment_btn;
+        TextView usersLike;
+        DatabaseReference like_ref;
+        FirebaseAuth auth;
 
         public PostViewHolder(View itemView) {
             super(itemView);
             mView = itemView;
 
+            like_btn = (LikeButton) mView.findViewById(R.id.like_button);
+            comment_btn = (ImageButton) mView.findViewById(R.id.comment_btn);
+
+            usersLike = (TextView) mView.findViewById(R.id.usersWhoLike);
+            like_ref = FirebaseDatabase.getInstance().getReference().child("Likes");
+            auth = FirebaseAuth.getInstance();
+            like_ref.keepSynced(true);
+
+        }
+
+        public void setComment(String post_key) {
+
+        }
+
+        public void setUsersLike(String post_key) {
+
+
+            like_ref.child(post_key).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    long userNumber = dataSnapshot.getChildrenCount();
+                /*for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()){
+                    String users = dataSnapshot1.getValue(String.class);
+                    StringBuilder buffer = new StringBuilder();
+                    for (int i=0;i<userNumber;i++){
+                        if(i>0){
+                            buffer.append(",");
+                        }
+                        buffer.append(users);
+                    }
+                    usersLike.setText(buffer);
+                }*/
+                    usersLike.setText("" + userNumber);
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+
+        public void setLikeBtn(final String post_key) {
+            like_ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.child(post_key).hasChild(auth.getCurrentUser().getUid())) {
+                        //like_btn.setImageResource(R.drawable.ic_like_blue);
+                        like_btn.setAnimationScaleFactor(3);
+                    } else {
+                        //like_btn.setImageResource(R.drawable.ic_like_grey);
+                        like_btn.setAnimationScaleFactor(3);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         }
 
         void setImage(Context context, String image) {
@@ -123,13 +258,14 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
             description.setText(desc);
         }
 
-        public void setUid(String uid) {
+        void setUid(String uid) {
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             assert user != null;
             String EMAIL = user.getEmail();
             TextView userId = (TextView) mView.findViewById(R.id.singleUserId);
-            userId.setText(EMAIL);
+            userId.setText(uid);
         }
+
     }
 
     @Override
@@ -145,7 +281,7 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.profile) {
+        if (id == R.id.Editprofile) {
 
             startActivity(new Intent(this, EditProfileActivity.class));
 
@@ -163,6 +299,9 @@ public class HomeActivity extends AppCompatActivity implements GoogleApiClient.O
         }
         if (id == R.id.addPost) {
             startActivity(new Intent(this, NewPostActivity.class));
+        }
+        if (id == R.id.profile) {
+            startActivity(new Intent(this, CurrentUserProfile.class));
         }
 
 

@@ -261,7 +261,6 @@ public class EditProfileActivity extends AppCompatActivity {
             final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             final LVPlayBall playball = (LVPlayBall) findViewById(R.id.loadingBall);
 
-
             name = userName.getText().toString().trim();
             desc = userDescription.getText().toString().trim();
             gender = userGender.getText().toString().trim();
@@ -283,6 +282,7 @@ public class EditProfileActivity extends AppCompatActivity {
             user.updateProfile(request).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
+                    finish();
                     Toast.makeText(EditProfileActivity.this, "Updated", Toast.LENGTH_SHORT).show();
                 }
             }).addOnFailureListener(new OnFailureListener() {

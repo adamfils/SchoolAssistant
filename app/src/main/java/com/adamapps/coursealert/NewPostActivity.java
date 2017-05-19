@@ -75,7 +75,7 @@ public class NewPostActivity extends AppCompatActivity {
         Button pubBtn = (Button) findViewById(R.id.publishButton);
         YoYo.with(Techniques.RubberBand).duration(500).playOn(pubBtn);
         assert user != null;
-        String uid = user.getUid();
+        String name = user.getDisplayName();
         String title = titleEdit.getText().toString().trim();
         String desc = descEdit.getText().toString().trim();
 
@@ -87,7 +87,7 @@ public class NewPostActivity extends AppCompatActivity {
 
         if (imageLinked != null) {
             Toast.makeText(this, "Publishing....", Toast.LENGTH_SHORT).show();
-            SendPost sendPost = new SendPost(imageLinked, title, desc, uid);
+            SendPost sendPost = new SendPost(imageLinked, title, desc, name);
             post_ref.child("post").push().setValue(sendPost).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
@@ -103,7 +103,7 @@ public class NewPostActivity extends AppCompatActivity {
             });
         }else{
             Toast.makeText(this, "Publishing....", Toast.LENGTH_SHORT).show();
-            SendPost sendPost = new SendPost("NoImageHere", title, desc, uid);
+            SendPost sendPost = new SendPost("NoImageHere", title, desc, name);
             post_ref.child("post").push().setValue(sendPost).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {

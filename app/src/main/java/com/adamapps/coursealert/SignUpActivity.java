@@ -103,7 +103,9 @@ public class SignUpActivity extends AppCompatActivity implements GoogleApiClient
                     @Override
                     public void onSuccess(AuthResult authResult) {
                         Toast.makeText(SignUpActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                        finish();
                         startActivity(new Intent(SignUpActivity.this, EditProfileActivity.class));
+
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override

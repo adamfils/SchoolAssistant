@@ -38,9 +38,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_margin="20dp"
         android:orientation="vertical">
 
         <Button
+            android:id="@+id/signInWelcome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#50ffffff"
@@ -50,6 +52,7 @@
             android:onClick="signIn"/>
 
         <Button
+            android:id="@+id/signUpWelcome"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
