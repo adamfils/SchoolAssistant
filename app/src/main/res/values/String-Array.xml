@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="faculties">
+        <item>ASTI</item>
+        <item>COT</item>
+        <item>FAVM</item>
+        <item>FA</item>
+        <item>FED</item>
+        <item>FET</item>
+        <item>FHS</item>
+        <item>FS</item>
+        <item>FSMS</item>
+        <item>HTTTC</item>
+        <item>SYM</item>
+    </string-array>
+
+    <string-array name="asti">
+        <item>GS/PB</item>
+        <item>INT</item>
+        <item>TRA</item>
+    </string-array>
+
+    <string-array name="cot">
+        <item>CENG</item>
+        <item>EENG</item>
+        <item>MET</item>
+        <item>REC-COT</item>
+        <item>COT-RCT</item>
+    </string-array>
+
+    <string-array name="favm">
+        <item>AEA</item>
+        <item>AAM</item>
+        <item>ANS</item>
+    </string-array>
+
+    <string-array name="fa">
+        <item>ENG</item>
+        <item>FRE</item>
+        <item>HIS</item>
+        <item>LIN</item>
+    </string-array>
+
+    <string-array name="fed">
+        <item>CST</item>
+        <item>EFA</item>
+        <item>EPY</item>
+        <item>FED-REF</item>
+    </string-array>
+
+    <string-array name="fet">
+        <item>CEN</item>
+        <item>EEN</item>
+    </string-array>
+
+    <string-array name="fhs">
+        <item>MLS</item>
+        <item>MED</item>
+        <item>NUR</item>
+        <item>PHH</item>
+        <item>FHS-RECFHS</item>
+    </string-array>
+
+    <string-array name="fs">
+        <item>BMB</item>
+        <item>BPP</item>
+        <item>CHM</item>
+        <item>CSC</item>
+        <item>ENV</item>
+        <item>GLY</item>
+        <item>MAT</item>
+        <item>MCP</item>
+        <item>PHY</item>
+        <item>RCS</item>
+        <item>ZAP</item>
+    </string-array>
+    <string-array name="desc_fs">
+        <item>BMB</item>
+        <item>BPP</item>
+        <item>CHM</item>
+        <item>CSC</item>
+        <item>ENV</item>
+        <item>GLY</item>
+        <item>MAT</item>
+        <item>MCP</item>
+        <item>PHY</item>
+        <item>RCS</item>
+        <item>ZAP</item>
+    </string-array>
+
+    <string-array name="fsms">
+        <item>ECN</item>
+        <item>GEO</item>
+        <item>JMC</item>
+        <item>LAW</item>
+        <item>PSP</item>
+        <item>RECSMS</item>
+        <item>SOC/ANT</item>
+        <item>WGS</item>
+    </string-array>
+
+    <string-array name="htttc">
+        <item>ADT</item>
+        <item>AGR</item>
+        <item>CFT</item>
+        <item>CSCHT</item>
+        <item>EPE</item>
+        <item>GDC</item>
+        <item>LAWHT</item>
+        <item>MGT</item>
+        <item>MEE</item>
+        <item>RHT</item>
+        <item>REN</item>
+        <item>SED</item>
+        <item>SEF</item>
+        <item>TRE</item>
+        <item>THM</item>
+    </string-array>
+
+    <string-array name="sym">
+        <item>SYA</item>
+    </string-array>
+
+</resources>

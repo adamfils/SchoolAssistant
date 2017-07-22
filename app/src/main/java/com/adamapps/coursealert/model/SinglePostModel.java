@@ -9,16 +9,18 @@ public class SinglePostModel {
     private String title;
     private String desc;
     private String uid;
+    private String name;
 
     public SinglePostModel(){
 
     }
 
-    public SinglePostModel(String image, String title, String desc, String uid) {
+    public SinglePostModel(String image, String title, String desc, String uid, String name) {
         this.image = image;
         this.title = title;
         this.desc = desc;
         this.uid = uid;
+        this.name = name;
     }
 
     public String getImage() {
@@ -51,5 +53,13 @@ public class SinglePostModel {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

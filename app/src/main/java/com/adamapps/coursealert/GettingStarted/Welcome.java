@@ -1,4 +1,4 @@
-package com.adamapps.coursealert;
+package com.adamapps.coursealert.GettingStarted;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
+import com.adamapps.coursealert.HomeActivity;
+import com.adamapps.coursealert.R;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.google.firebase.auth.FirebaseAuth;
@@ -20,13 +22,14 @@ public class Welcome extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
+        auth = FirebaseAuth.getInstance();
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         listener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if(user !=null ){
-                    finish();
                     startActivity(new Intent(Welcome.this,HomeActivity.class));
+                    finish();
                 }
             }
         };
@@ -46,14 +49,12 @@ public class Welcome extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if(auth!=null)
         auth.addAuthStateListener(listener);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if(auth!=null)
         auth.removeAuthStateListener(listener);
     }
 }

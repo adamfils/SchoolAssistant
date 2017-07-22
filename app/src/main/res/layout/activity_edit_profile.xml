@@ -20,57 +20,124 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-    <com.mikhaellopez.circularimageview.CircularImageView
-        android:id="@+id/userImage"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:src="@drawable/ic_person"
-        app:civ_border="true"
-        app:civ_border_color="@color/colorPrimary"
-        app:civ_border_width="2dp"
-        app:civ_shadow="true"
-        app:civ_shadow_color="@color/colorPrimaryDark"
-        android:onClick="pickPic"/>
+            <com.mikhaellopez.circularimageview.CircularImageView
+                android:id="@+id/userImage"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:onClick="pickPic"
+                android:src="@drawable/ic_person"
+                app:civ_border="true"
+                app:civ_border_color="@color/colorPrimary"
+                app:civ_border_width="2dp"
+                app:civ_shadow="true"
+                app:civ_shadow_color="@color/colorPrimaryDark" />
 
-    <com.ldoublem.loadingviewlib.view.LVPlayBall
-        android:id="@+id/loadingBall"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:visibility="gone"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/userImage"
-        android:orientation="vertical">
+            <com.ldoublem.loadingviewlib.view.LVPlayBall
+                android:id="@+id/loadingBall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:visibility="gone" />
 
-        <EditText
-            android:id="@+id/userDisplayName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Name"
-            android:layout_marginTop="10dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/userImage"
+                android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/userDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Description"/>
-        <EditText
-            android:id="@+id/userGender"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Gender"/>
-        <EditText
-            android:id="@+id/userLevel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Level"
-            android:inputType="number"/>
-    </LinearLayout>
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/userDisplayName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:hint="Name" />
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/userDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Description" />
+                </android.support.design.widget.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/userGender"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="Gender" />
+
+                <RadioGroup
+                    android:id="@+id/radioGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RadioButton
+                        android:id="@+id/male"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Male" />
+
+                    <RadioButton
+                        android:id="@+id/female"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Female" />
+                </RadioGroup>
+
+                <TextView
+                    android:id="@+id/userLevelPick"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="20dp"
+                    android:text="Level" />
+
+                <Spinner
+                    android:id="@+id/levelInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+
+                <TextView
+                    android:id="@+id/userFacultyPick"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="20dp"
+                    android:text="Major" />
+
+                <Spinner
+                    android:id="@+id/facultyInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/userMajorPick"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="20dp"
+                    android:text="Minor" />
+
+                <Spinner
+                    android:id="@+id/majorInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
         </RelativeLayout>
     </ScrollView>
 

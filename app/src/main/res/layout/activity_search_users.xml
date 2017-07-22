@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/wall1">
+
+    <include
+        layout="@layout/toolbar"
+        android:id="@+id/tool" />
+
+    <com.miguelcatalan.materialsearchview.MaterialSearchView
+        android:id="@+id/search_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:searchBackground="@color/colorPrimary"
+        android:textColorHint="#fff" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/search_result_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tool" />
+
+</RelativeLayout>

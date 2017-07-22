@@ -1,9 +1,8 @@
-package com.adamapps.coursealert;
+package com.adamapps.coursealert.GettingStarted;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
@@ -13,6 +12,9 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
+import com.adamapps.coursealert.HomeActivity;
+import com.adamapps.coursealert.R;
+import com.adamapps.coursealert.SelectFavourites;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -112,9 +114,9 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        Toast.makeText(SignInActivity.this, "Success", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SignInActivity.this, "Welcome Back " + auth.getCurrentUser().getDisplayName(), Toast.LENGTH_SHORT).show();
                         finish();
-                        startActivity(new Intent(SignInActivity.this, EditProfileActivity.class));
+                        startActivity(new Intent(SignInActivity.this, SelectFavourites.class));
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -154,25 +156,21 @@ public class SignInActivity extends AppCompatActivity implements GoogleApiClient
             return;
         }
         final LVEatBeans load = (LVEatBeans) findViewById(R.id.loading);
-        final ProgressDialog progressDialog = new ProgressDialog(this);
 
-        if (Build.VERSION.SDK_INT >= 16) {
+
+        /*if (Build.VERSION.SDK_INT >= 16) {*/
             load.setVisibility(View.VISIBLE);
             load.setViewColor(Color.WHITE);
             load.setEyeColor(Color.parseColor("#006400"));
             load.startAnim(5000);
             //load.animate();
-        } else {
-            progressDialog.setTitle("Signing In");
-            progressDialog.show();
-            progressDialog.setCanceledOnTouchOutside(false);
-        }
+
         auth.signInWithEmailAndPassword(email, pass).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {
-                progressDialog.dismiss();
                 finish();
-                startActivity(new Intent(SignInActivity.this, HomeActivity.class));
+                startActivity(new Intent(SignInActivity.this, SelectFavourites.class));
+                Toast.makeText(SignInActivity.this, "Welcome Back " + auth.getCurrentUser().getDisplayName(), Toast.LENGTH_SHORT).show();
 
             }
         }).addOnFailureListener(new OnFailureListener() {

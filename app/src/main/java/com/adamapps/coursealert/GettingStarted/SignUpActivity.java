@@ -1,4 +1,4 @@
-package com.adamapps.coursealert;
+package com.adamapps.coursealert.GettingStarted;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -13,6 +13,8 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.adamapps.coursealert.EditProfileActivity;
+import com.adamapps.coursealert.R;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;

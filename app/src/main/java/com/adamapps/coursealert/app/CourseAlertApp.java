@@ -1,4 +1,4 @@
-package com.adamapps.coursealert;
+package com.adamapps.coursealert.app;
 
 import android.app.Application;
 

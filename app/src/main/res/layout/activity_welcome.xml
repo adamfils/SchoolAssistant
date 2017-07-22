@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    android:background="@drawable/wall1"
     android:orientation="vertical"
-    tools:context="com.adamapps.coursealert.Welcome">
+    tools:context="com.adamapps.coursealert.GettingStarted.Welcome">
 
     <LinearLayout
         android:id="@+id/first"

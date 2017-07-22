@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#c0c0c0"
-    tools:context="com.adamapps.coursealert.SignUpActivity">
+    android:background="@drawable/wall1"
+    tools:context="com.adamapps.coursealert.GettingStarted.SignUpActivity">
 
     <include
         android:id="@+id/tool"
@@ -61,6 +61,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="10dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
         android:background="#50ffffff"
         android:clickable="true"
         android:onClick="signMeUp"/>

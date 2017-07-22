@@ -24,13 +24,15 @@
             android:id="@+id/post_image"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:src="@drawable/ic_image"
+            android:src="@drawable/ic_file_upload"
             android:layout_margin="10dp" />
         <EditText
             android:id="@+id/post_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/title"/>
+            android:hint="@string/title"
+            android:lines="1"
+            android:maxLines="1" />
         <EditText
             android:id="@+id/post_desc"
             android:layout_width="match_parent"
@@ -45,6 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:text="Post"
+        android:textColor="#fff"
         android:background="@color/colorPrimary"
         android:layout_margin="10dp"
         android:onClick="publishPost"/>
