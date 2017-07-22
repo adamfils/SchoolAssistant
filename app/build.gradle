@@ -5,13 +5,7 @@ def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
-    signingConfigs {
-        release {
-            keyAlias 'adam'
-            keyPassword 'adam70077183'
-            storeFile file('C:/zzme/KEY/adamskey.jks')
-            storePassword 'adam70077183'
-        }
+
     }
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
